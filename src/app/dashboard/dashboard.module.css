@@ -1,0 +1,282 @@
+/* src/app/dashboard/dashboard.module.css */
+
+/* Layout Geral */
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  background-color: #ffff;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  margin-left: 61px;
+}
+.welcomeMessage {
+  margin: 0 0 20px 0;
+  color: #2b3a4b;
+  font-family: "Inter", sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+}
+.dashboardSubtitle {
+  margin: 0 0 20px 61px;
+  color: #858c94;
+  font-family: "Inter", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+/* Cards */
+.cardsContainer {
+  display: flex;
+  gap: 50px;
+  margin-left: 61px;
+  width: 894px;
+}
+.card {
+  width: 298px;
+  height: 105px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 18px 32px rgba(208, 210, 218, 0.15);
+  display: flex;
+  align-items: center;
+}
+.cardIcon {
+  margin: 20px 0 20px 17px;
+  width: 65px;
+  height: 65px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cardIcon img {
+  width: 37px;
+  height: 37px;
+}
+.cardContent {
+  margin-left: 26px;
+}
+.cardContent h3 {
+  color: #a3aed0;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+.cardContent p {
+  color: #1b2559;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  margin: 0;
+  font-size: 36px;
+}
+
+/* Botão abrir modal */
+.openModalBtn {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  width: 181px;
+  border-radius: 27px;
+  margin-left: 61px;
+  margin-top: 36px;
+  height: 40px;
+  background-color: #007aff;
+  display: flex;
+  align-items: center;
+  border: 0;
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 0 12px;
+}
+.openModalBtn:hover {
+  background-color: #0056b3;
+}
+.btnIcon {
+  margin: 8px;
+}
+
+/* Tabela */
+.tableContainer {
+  margin-left: 61px;
+  position: relative;
+}
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.dataTable thead {
+  background-color: #ffffff;
+  border-bottom: 2px solid #ddd;
+  font-weight: 400;
+  font-size: 18px;
+}
+.dataTable th,
+.dataTable td {
+  padding: 16px;
+  text-align: left;
+}
+.dataTable th:nth-child(1),
+.dataTable td:nth-child(1),
+.dataTable th:nth-child(2),
+.dataTable td:nth-child(2),
+.dataTable th:nth-child(3),
+.dataTable td:nth-child(3) {
+  width: 33.33%;
+}
+.dataTable th:nth-child(4),
+.dataTable td:nth-child(4) {
+  width: 0;
+  padding: 0;
+}
+.dataTable tbody tr:nth-child(even) {
+  background-color: #f9f9fa;
+}
+.dataTable tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Status */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.statusIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.active .statusIndicator {
+  background-color: #28a745;
+}
+.inactive .statusIndicator {
+  background-color: #dc3545;
+}
+
+/* Ações da tabela */
+.actionCell {
+  position: relative;
+}
+.actions {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 6px;
+}
+.actionBtn {
+  height: 32px;
+  width: 32px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+.actionBtn:hover {
+  color: #007bff;
+}
+
+/* Modal (estilos gerais) */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 16px;
+  width: 430px;
+  height: 366px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+}
+.closeModalBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-top: 40px;
+}
+.modalIcon {
+  width: 64px;
+  height: 64px;
+}
+.modalMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+}
+.modalForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.modalForm label {
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.modalForm input {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 10.11px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  margin-bottom: 21px;
+  padding-left: 10px;
+}
+.submitBtn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  height: 41px;
+}
+.submitBtn:hover {
+  background-color: #0056b3;
+}
