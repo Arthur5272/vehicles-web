@@ -1,4 +1,3 @@
-// src/app/dashboard/page.tsx
 "use client";
 
 import Sidebar from "@/components/ui/Sidebar";

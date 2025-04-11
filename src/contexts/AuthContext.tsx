@@ -1,15 +1,13 @@
-// src/contexts/AuthContext.tsx
 "use client";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
 
-// Interface atualizada para incluir todas as claims necessárias
 interface JwtPayload {
   exp: number;
   iat: number;
-  sub: string; // Normalmente contém o userId
-  name: string; // Garantir que está vindo do back-end
-  email?: string; // Opcional, caso precise
+  sub: string;
+  name: string;
+  email?: string;
 }
 
 type User = {
