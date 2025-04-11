@@ -3,11 +3,13 @@
 import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useEffect, useState } from "react";
 
+// Interface atualizada para incluir todas as claims necessárias
 interface JwtPayload {
   exp: number;
   iat: number;
-  userId: string;
-  name: string;
+  sub: string; // Normalmente contém o userId
+  name: string; // Garantir que está vindo do back-end
+  email?: string; // Opcional, caso precise
 }
 
 type User = {
@@ -28,30 +30,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
+  // Função para decodificar e atualizar o estado
+  const updateAuthState = (newToken: string | null) => {
+    if (!newToken) {
+      setUser(null);
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode<JwtPayload>(newToken);
+
+      // Verificação de claims essenciais
+      if (!decoded.sub || !decoded.name) {
+        throw new Error("Token inválido: claims essenciais faltando");
+      }
+
+      setUser({
+        id: decoded.sub, // Usando sub como ID (padrão JWT)
+        name: decoded.name,
+      });
+    } catch (error) {
+      console.error("Falha na decodificação do token:", error);
+      logout(); // Força logout em caso de token inválido
+    }
+  };
+
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       setToken(savedToken);
-      try {
-        const decoded = jwtDecode<JwtPayload>(savedToken);
-        setUser({ id: decoded.userId, name: decoded.name });
-      } catch (error) {
-        console.error("Erro ao decodificar token:", error);
-        setUser(null);
-      }
+      updateAuthState(savedToken);
     }
   }, []);
 
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
-    try {
-      const decoded = jwtDecode<JwtPayload>(newToken);
-      setUser({ id: decoded.userId, name: decoded.name });
-    } catch (error) {
-      console.error("Erro ao decodificar token:", error);
-      setUser(null);
-    }
+    updateAuthState(newToken); // Usa a função centralizada
   };
 
   const logout = () => {

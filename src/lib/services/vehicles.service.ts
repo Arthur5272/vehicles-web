@@ -1,4 +1,4 @@
-import { api } from "@/lib/api/client";
+import { api } from "@/lib/client";
 
 export interface Vehicle {
   id: string;
@@ -8,7 +8,7 @@ export interface Vehicle {
 }
 
 export async function getVehicles(): Promise<Vehicle[]> {
-  const response = await api.get("/");
+  const response = await api.get("/vehicles");
   return response.data;
 }
 
@@ -16,7 +16,7 @@ export async function createVehicle(data: {
   name: string;
   plate: string;
 }): Promise<Vehicle> {
-  const response = await api.post("/", data);
+  const response = await api.post("/vehicles", data);
   return response.data;
 }
 
@@ -24,22 +24,22 @@ export async function updateVehicle(
   id: string,
   data: Partial<Vehicle>
 ): Promise<Vehicle> {
-  const response = await api.put(`/${id}`, data);
+  const response = await api.put(`/vehicles/${id}`, data);
   return response.data;
 }
 
 export async function archiveVehicle(id: string): Promise<Vehicle> {
-  const response = await api.patch(`/${id}/archive`);
+  const response = await api.patch(`/vehicles/${id}/archive`);
   return response.data;
 }
 
 export async function unarchiveVehicle(id: string): Promise<Vehicle> {
-  const response = await api.patch(`/${id}/unarchive`);
+  const response = await api.patch(`/vehicles/${id}/unarchive`);
   return response.data;
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
-  await api.delete(`/${id}`);
+  await api.delete(`/vehicles/${id}`);
 }
 
 export interface VehicleStats {
@@ -52,6 +52,6 @@ export interface VehicleStats {
 }
 
 export async function getVehicleStats(): Promise<VehicleStats> {
-  const response = await api.get("/stats");
+  const response = await api.get("/vehicles/stats");
   return response.data;
 }

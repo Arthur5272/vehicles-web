@@ -7,13 +7,18 @@ import styles from "./Sidebar.module.css";
 export default function Sidebar() {
   const router = useRouter();
 
-  // Função para navegação simples; pode ser expandida conforme a necessidade
   function handleNavigate(route: string) {
     router.push(`/${route}`);
   }
 
   return (
     <aside className={styles.sidebar}>
+      {/* Div no canto superior direito */}
+      <div className={styles.topRightBox}>
+        <Image src="/User-(1).svg" alt="Usuário" width={26} height={26} />
+        <Image src="/arrow.svg" alt="Seta" width={24} height={27} />
+      </div>
+
       <div className={styles.logo}>
         <Image src="/logo.svg" alt="Logo" width={157} height={44} />
       </div>

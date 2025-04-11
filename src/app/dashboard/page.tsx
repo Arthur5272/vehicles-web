@@ -3,11 +3,15 @@
 
 import Sidebar from "@/components/ui/Sidebar";
 import Modal from "@/components/ui/modal";
-import { useAuth } from "@/contexts/AuthContext"; // import do AuthContext
+import { useAuth } from "@/contexts/AuthContext";
 import {
+  archiveVehicle,
   createVehicle,
+  deleteVehicle,
   getVehicles,
   getVehicleStats,
+  unarchiveVehicle,
+  updateVehicle,
   Vehicle,
 } from "@/lib/services/vehicles.service";
 import Image from "next/image";
@@ -17,8 +21,7 @@ import styles from "./dashboard.module.css";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user } = useAuth(); // pegando os dados do usuário logado
-
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [stats, setStats] = useState<{
@@ -27,8 +30,8 @@ export default function DashboardPage() {
     inactive: number;
   } | null>(null);
   const [newVehicle, setNewVehicle] = useState({ name: "", plate: "" });
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
-  // Proteger a rota
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -80,12 +83,58 @@ export default function DashboardPage() {
     }
   };
 
+  const handleEditVehicle = async () => {
+    if (!editingVehicle) return;
+
+    try {
+      await updateVehicle(editingVehicle.id, {
+        name: editingVehicle.name,
+        plate: editingVehicle.plate,
+      });
+      setEditingVehicle(null);
+      fetchVehicles();
+    } catch (error) {
+      console.error("Erro ao atualizar veículo:", error);
+    }
+  };
+
+  const handleToggleStatus = async (vehicle: Vehicle) => {
+    try {
+      if (vehicle.status) {
+        await archiveVehicle(vehicle.id);
+      } else {
+        await unarchiveVehicle(vehicle.id);
+      }
+      fetchVehicles();
+      fetchStats();
+    } catch (error) {
+      console.error("Erro ao alterar status:", error);
+    }
+  };
+
+  const handleDeleteVehicle = async (vehicleId: string) => {
+    if (
+      !window.confirm(
+        "Tem certeza que deseja excluir este veículo permanentemente?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await deleteVehicle(vehicleId);
+      fetchVehicles();
+      fetchStats();
+    } catch (error) {
+      console.error("Erro ao excluir veículo:", error);
+    }
+  };
+
   return (
     <div className={styles.layout}>
       <Sidebar />
       <main className={styles.mainContent}>
         <div className={styles.header}>
-          {/* Exibe o nome do usuário (vindo do AuthContext) */}
           <h1 className={styles.welcomeMessage}>
             Olá {user ? user.name : "usuário"},
           </h1>
@@ -93,7 +142,6 @@ export default function DashboardPage() {
             Cadastre e Gerencie seus veículos
           </p>
 
-          {/* Resto do código para cards, tabela, etc */}
           <div className={styles.cardsContainer}>
             <div className={styles.card}>
               <div className={styles.cardIcon}>
@@ -106,7 +154,7 @@ export default function DashboardPage() {
               </div>
               <div className={styles.cardContent}>
                 <h3>Total</h3>
-                <p>{stats ? stats.total : "..."}</p>
+                <p>{stats ? stats.total : "0"}</p>
               </div>
             </div>
 
@@ -121,7 +169,7 @@ export default function DashboardPage() {
               </div>
               <div className={styles.cardContent}>
                 <h3>Ativos</h3>
-                <p>{stats ? stats.active : "..."}</p>
+                <p>{stats ? stats.active : "0"}</p>
               </div>
             </div>
 
@@ -136,7 +184,7 @@ export default function DashboardPage() {
               </div>
               <div className={styles.cardContent}>
                 <h3>Inativos</h3>
-                <p>{stats ? stats.inactive : "..."}</p>
+                <p>{stats ? stats.inactive : "0"}</p>
               </div>
             </div>
           </div>
@@ -154,7 +202,6 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {/* Tabela de veículos */}
         <div className={styles.tableContainer}>
           <table className={styles.dataTable}>
             <thead>
@@ -173,9 +220,7 @@ export default function DashboardPage() {
                   <td className={styles.statusCell}>
                     <span
                       className={`${styles.status} ${
-                        vehicle.status === true
-                          ? styles.active
-                          : styles.inactive
+                        vehicle.status ? styles.active : styles.inactive
                       }`}
                     >
                       <span className={styles.statusIndicator}></span>
@@ -184,7 +229,11 @@ export default function DashboardPage() {
                   </td>
                   <td className={styles.actionCell}>
                     <div className={styles.actions}>
-                      <button className={styles.actionBtn} title="Editar">
+                      <button
+                        className={styles.actionBtn}
+                        title="Editar"
+                        onClick={() => setEditingVehicle(vehicle)}
+                      >
                         <Image
                           src="/pencil.svg"
                           alt="Editar"
@@ -192,18 +241,25 @@ export default function DashboardPage() {
                           height={16}
                         />
                       </button>
+
                       <button
                         className={styles.actionBtn}
-                        title="Ativar/Desativar"
+                        title={vehicle.status ? "Arquivar" : "Desarquivar"}
+                        onClick={() => handleToggleStatus(vehicle)}
                       >
                         <Image
-                          src="/archive.svg"
-                          alt="Arquivar"
+                          src={"archive.svg"}
+                          alt={vehicle.status ? "Arquivar" : "Desarquivar"}
                           width={16}
                           height={16}
                         />
                       </button>
-                      <button className={styles.actionBtn} title="Excluir">
+
+                      <button
+                        className={styles.actionBtn}
+                        title="Excluir"
+                        onClick={() => handleDeleteVehicle(vehicle.id)}
+                      >
                         <Image
                           src="/trash-2.svg"
                           alt="Excluir"
@@ -220,6 +276,7 @@ export default function DashboardPage() {
         </div>
       </main>
 
+      {/* Modal de Criação */}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -246,6 +303,38 @@ export default function DashboardPage() {
             setNewVehicle((prev) => ({ ...prev, plate: e.target.value }))
           }
         />
+      </Modal>
+
+      {/* Modal de Edição */}
+      <Modal
+        isOpen={!!editingVehicle}
+        onClose={() => setEditingVehicle(null)}
+        title="Editar Veículo"
+        onSubmit={handleEditVehicle}
+      >
+        {editingVehicle && (
+          <>
+            <label htmlFor="editName">Nome do Veículo:</label>
+            <input
+              type="text"
+              id="editName"
+              value={editingVehicle.name}
+              onChange={(e) =>
+                setEditingVehicle({ ...editingVehicle, name: e.target.value })
+              }
+            />
+
+            <label htmlFor="editPlate">Placa do Veículo:</label>
+            <input
+              type="text"
+              id="editPlate"
+              value={editingVehicle.plate}
+              onChange={(e) =>
+                setEditingVehicle({ ...editingVehicle, plate: e.target.value })
+              }
+            />
+          </>
+        )}
       </Modal>
     </div>
   );

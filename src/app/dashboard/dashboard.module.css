@@ -19,7 +19,7 @@
   margin-left: 61px;
 }
 .welcomeMessage {
-  margin: 0 0 20px 0;
+  margin: 0 0 20px 61px;
   color: #2b3a4b;
   font-family: "Inter", sans-serif;
   font-size: 48px;
@@ -109,7 +109,7 @@
 
 /* Tabela */
 .tableContainer {
-  margin-left: 61px;
+  margin-left: 120px;
   position: relative;
 }
 .dataTable {
