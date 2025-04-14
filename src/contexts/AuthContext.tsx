@@ -28,7 +28,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  // Função para decodificar e atualizar o estado
   const updateAuthState = (newToken: string | null) => {
     if (!newToken) {
       setUser(null);
@@ -38,18 +37,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const decoded = jwtDecode<JwtPayload>(newToken);
 
-      // Verificação de claims essenciais
       if (!decoded.sub || !decoded.name) {
         throw new Error("Token inválido: claims essenciais faltando");
       }
 
       setUser({
-        id: decoded.sub, // Usando sub como ID (padrão JWT)
+        id: decoded.sub,
         name: decoded.name,
       });
     } catch (error) {
       console.error("Falha na decodificação do token:", error);
-      logout(); // Força logout em caso de token inválido
+      logout();
     }
   };
 
@@ -64,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
-    updateAuthState(newToken); // Usa a função centralizada
+    updateAuthState(newToken);
   };
 
   const logout = () => {
